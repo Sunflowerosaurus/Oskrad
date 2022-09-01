@@ -16,6 +16,9 @@ AOskradCharacter::AOskradCharacter()
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
+	// Set Health for character
+	CharacterHealth = 100;
+
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -45,7 +48,28 @@ AOskradCharacter::AOskradCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+
+
+
+void AOskradCharacter::LogHealth() {
+	UE_LOG(LogTemp, Warning, TEXT("Character's health: %d"), CharacterHealth);
+
+}
+
+
+
+void AOskradCharacter::ReceiveDamage(int Damage) {
+	CharacterHealth -= Damage;
+	LogHealth();
+
+	if (CharacterHealth <= 0) {
+		this->Destroy();
+	}
+}
+
 void AOskradCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 }
+
+
