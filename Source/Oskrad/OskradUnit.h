@@ -1,5 +1,3 @@
-// nasze pole
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,7 +11,7 @@ class IOskradUnit
 		virtual void SpecialAttack1(float BaseDamage, int ActionPoints) = 0;
 		virtual void SpecialAttack2(float BaseDamage, int ActionPoints) = 0;
 		virtual void SpecialAttack3(float BaseDamage, int ActionPoints) = 0;
-		virtual void MoveAction(int ActionPoints) = 0; 
+		virtual void MoveAction(int ActionPoints) = 0;
 
 };
 
