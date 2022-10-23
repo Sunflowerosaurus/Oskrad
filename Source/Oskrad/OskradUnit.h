@@ -1,17 +1,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "OskradUnit.generated.h"
 
-class IOskradUnit
+UINTERFACE(MinimalAPI, Blueprintable)
+class UOskradUnitInterface : public UInterface
 {
-	public:
+	GENERATED_BODY()
+};
+
+
+
+class IOskradUnitInterface
+{
+	GENERATED_BODY()
+public:
+	virtual void ReceiveDamage(float InDamage) = 0;
 		
-		virtual void ReceiveDamage(float Damage, float Health, float ArmorPoints) = 0;
-		virtual void BasicAttack(float BaseDamage, int ActionPoints) = 0;
-		virtual void SpecialAttack1(float BaseDamage, int ActionPoints) = 0;
-		virtual void SpecialAttack2(float BaseDamage, int ActionPoints) = 0;
-		virtual void SpecialAttack3(float BaseDamage, int ActionPoints) = 0;
-		virtual void MoveAction(int ActionPoints) = 0;
+	virtual void BasicAttack(IOskradUnitInterface* InTarget) = 0;
+	virtual void SpecialAttack1(IOskradUnitInterface* InTarget) = 0;
+	virtual void SpecialAttack2(IOskradUnitInterface* InTarget) = 0;
+	virtual void SpecialAttack3(IOskradUnitInterface* InTarget) = 0;
+
+	virtual void MoveAction(IOskradUnitInterface* InTarget) = 0;
+
+	virtual float GetHealth() = 0;
 
 };
 
