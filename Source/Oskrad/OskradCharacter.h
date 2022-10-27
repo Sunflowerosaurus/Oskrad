@@ -14,9 +14,6 @@ class AOskradCharacter : public ACharacter
 public:
 	AOskradCharacter();
 	
-	void LogHealth();
-	void ReceiveDamage(int Damage);
-
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -26,8 +23,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 private:
-
-	int CharacterHealth;
 
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
