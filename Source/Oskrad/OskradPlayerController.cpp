@@ -1,12 +1,15 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "OskradPlayerController.h"
+
+// UE
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "OskradCharacter.h"
 #include "Engine/World.h"
+
+// Oskrad
+#include "OskradCharacter.h"
+#include "Oskrad.h"
 
 AOskradPlayerController::AOskradPlayerController()
 {
@@ -14,70 +17,75 @@ AOskradPlayerController::AOskradPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 }
 
+void AOskradPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	auto InputMode = FInputModeGameAndUI{};
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+	InputMode.SetHideCursorDuringCapture(false);
+	SetInputMode(InputMode);
+}
+
 void AOskradPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	if(bInputPressed)
+	if (bMoveDestinationInputPressed)
 	{
-		FollowTime += DeltaTime;
+		MoveDestinationFollowTime += DeltaTime;
 
-		// Look for the touch location
-		FVector HitLocation = FVector::ZeroVector;
 		FHitResult Hit;
-		if(bIsTouch)
-		{
-			GetHitResultUnderFinger(ETouchIndex::Touch1, ECC_Visibility, true, Hit);
-		}
-		else
-		{
-			GetHitResultUnderCursor(ECC_Visibility, true, Hit);
-		}
-		HitLocation = Hit.Location;
+		GetHitResultUnderCursor(ECC_Visibility, true, Hit);
+		const FVector HitLocation = Hit.Location;
 
-		// Direct the Pawn towards that location
-		APawn* const MyPawn = GetPawn();
-		if(MyPawn)
+		if (SelectedUnit != nullptr)
 		{
-			FVector WorldDirection = (HitLocation - MyPawn->GetActorLocation()).GetSafeNormal();
-			MyPawn->AddMovementInput(WorldDirection, 1.f, false);
+			FVector WorldDirection = (HitLocation - SelectedUnit->GetActorLocation()).GetSafeNormal();
+			SelectedUnit->AddMovementInput(WorldDirection, 1.f, false);
 		}
 	}
 	else
 	{
-		FollowTime = 0.f;
+		MoveDestinationFollowTime = 0.f;
 	}
 }
 
 void AOskradPlayerController::SetupInputComponent()
 {
-	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AOskradPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &AOskradPlayerController::OnSetDestinationReleased);
 
-	// support touch devices 
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AOskradPlayerController::OnTouchPressed);
-	InputComponent->BindTouch(EInputEvent::IE_Released, this, &AOskradPlayerController::OnTouchReleased);
+	InputComponent->BindAction("PickUnitSingle", IE_Pressed, this, &AOskradPlayerController::OnPickUnitSinglePressed);
+}
 
+void AOskradPlayerController::SelectUnit(AOskradUnitBase* const InToSelect)
+{
+	if (InToSelect == nullptr)
+	{
+		UE_LOG(LogOskrad, Warning, TEXT("Trying to select a nullptr."));
+		return;
+	}
+
+	SelectedUnit = InToSelect;
 }
 
 void AOskradPlayerController::OnSetDestinationPressed()
 {
-	// We flag that the input is being pressed
-	bInputPressed = true;
+	bMoveDestinationInputPressed = true;
+
 	// Just in case the character was moving because of a previous short press we stop it
 	StopMovement();
 }
 
 void AOskradPlayerController::OnSetDestinationReleased()
 {
-	// Player is no longer pressing the input
-	bInputPressed = false;
+	bMoveDestinationInputPressed = false;
 
-	// If it was a short press
-	if(FollowTime <= ShortPressThreshold)
+	// Handle short press
+	if (MoveDestinationFollowTime <= ShortPressThreshold)
 	{
 		// We look for the location in the world where the player has pressed the input
 		FVector HitLocation = FVector::ZeroVector;
@@ -85,20 +93,20 @@ void AOskradPlayerController::OnSetDestinationReleased()
 		GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 		HitLocation = Hit.Location;
 
-		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitLocation);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitLocation, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+
+		// TODO [RCH]: This would move our pawn instead of the selected unit. Move the selected unit instead.
+		// We move there and spawn some particles
+		//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitLocation);
 	}
 }
 
-void AOskradPlayerController::OnTouchPressed(const ETouchIndex::Type FingerIndex, const FVector Location)
+void AOskradPlayerController::OnPickUnitSinglePressed()
 {
-	bIsTouch = true;
-	OnSetDestinationPressed();
-}
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECC_Pawn, true, Hit);
+	auto* TargetActor = Hit.GetActor();
 
-void AOskradPlayerController::OnTouchReleased(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	bIsTouch = false;
-	OnSetDestinationReleased();
+	auto* TargetOskradUnit = Cast<AOskradUnitBase>(TargetActor);
+	SelectUnit(TargetOskradUnit); // Takes care of nullptrs
 }

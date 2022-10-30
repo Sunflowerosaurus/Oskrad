@@ -1,30 +1,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+
+// Oskrad
+#include "OskradCharacter.h"
+
+// Gen
 #include "OskradUnit.generated.h"
 
-UINTERFACE(MinimalAPI, Blueprintable)
-class UOskradUnitInterface : public UInterface
-{
-	GENERATED_BODY()
-};
-
-
-
-class IOskradUnitInterface
+// TODO [RCH]: This should probably just inherit from APawn, but ACharacters provides a lot of features for free, so we keep it this way for now
+UCLASS()
+class AOskradUnitBase : public AOskradCharacter
 {
 	GENERATED_BODY()
 public:
-	virtual void ReceiveDamage(float InDamage) = 0;
-		
-	virtual void BasicAttack(IOskradUnitInterface* InTarget) = 0;
-	virtual void SpecialAttack1(IOskradUnitInterface* InTarget) = 0;
-	virtual void SpecialAttack2(IOskradUnitInterface* InTarget) = 0;
-	virtual void SpecialAttack3(IOskradUnitInterface* InTarget) = 0;
+	virtual void ReceiveDamage(float InDamage) {};
 
-	virtual void MoveAction(IOskradUnitInterface* InTarget) = 0;
+	virtual void BasicAttack(AOskradUnitBase* InTarget) {};
+	virtual void SpecialAttack1(AOskradUnitBase* InTarget) {};
+	virtual void SpecialAttack2(AOskradUnitBase* InTarget) {};
+	virtual void SpecialAttack3(AOskradUnitBase* InTarget) {};
 
-	virtual float GetHealth() = 0;
+	virtual void MoveAction(AOskradUnitBase* InTarget) {};
+
+	virtual float GetHealth() { return -1.f; };
 
 };
-

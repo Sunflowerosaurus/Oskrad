@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -9,31 +7,31 @@
 #include "OskradTank.generated.h"
 
 UCLASS()
-class OSKRAD_API AOskradTank : public AOskradCharacter, public IOskradUnitInterface
+class OSKRAD_API AOskradTank : public AOskradUnitBase
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-
 	void ReceiveDamage(float InDamage) override;
 
-	
-	void BasicAttack(IOskradUnitInterface* InTarget) override;
-	void SpecialAttack1(IOskradUnitInterface* InTarget) override
-	{
-		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
-	} 
-	void SpecialAttack2(IOskradUnitInterface* InTarget) override
-	{
-		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
-	}
-	void SpecialAttack3(IOskradUnitInterface* InTarget) override 
+	void BasicAttack(AOskradUnitBase* InTarget) override;
+
+	void SpecialAttack1(AOskradUnitBase* InTarget) override
 	{
 		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
 	}
 
-	void MoveAction(IOskradUnitInterface* InTarget) override 
+	void SpecialAttack2(AOskradUnitBase* InTarget) override
+	{
+		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
+	}
+
+	void SpecialAttack3(AOskradUnitBase* InTarget) override
+	{
+		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
+	}
+
+	void MoveAction(AOskradUnitBase* InTarget) override
 	{
 		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
 	}
@@ -41,7 +39,7 @@ public:
 	virtual float GetHealth() override;
 
 	AOskradTank();
-	
+
 private:
 	float HealthPoints;
 	int ActionPoints;
@@ -52,7 +50,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

@@ -2,9 +2,15 @@
 
 #pragma once
 
+// UE
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+
+// Oskrad
+#include "OskradUnit.h"
+
+// Gen
 #include "OskradPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -20,31 +26,51 @@ public:
 
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	float ShortPressThreshold;
+		float ShortPressThreshold;
 
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UNiagaraSystem* FXCursor;
+		UNiagaraSystem* FXCursor;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
-	// Begin PlayerController interface
+	/*
+	* Actor interface
+	*/
+
+	virtual void BeginPlay() override;
+
+	/*
+	* PlayerController interface
+	*/
+
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
-	// End PlayerController interface
 
-	/** Input handlers for SetDestination action. */
+	/*
+	 * OskradPlayerController functionality
+	 */
+
+	void SelectUnit(AOskradUnitBase* const ToSelect);
+
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
-	void OnTouchPressed(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void OnTouchReleased(const ETouchIndex::Type FingerIndex, const FVector Location);
+
+	void MovePawnCameraUp();
+
+	void OnPickUnitSinglePressed();
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	AOskradUnitBase* SelectedUnit = nullptr;
 
 private:
-	bool bInputPressed; // Input is bring pressed
-	bool bIsTouch; // Is it a touch device
-	float FollowTime; // For how long it has been pressed
+	bool bMoveDestinationInputPressed; 
+
+	// For how long it "move to destination" input has been pressed
+	float MoveDestinationFollowTime; 
 };
 
 
