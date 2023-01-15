@@ -6,6 +6,8 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Engine/World.h"
+#include "AIController.h"
+
 
 // Oskrad
 #include "OskradCharacter.h"
@@ -95,9 +97,18 @@ void AOskradPlayerController::OnSetDestinationReleased()
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitLocation, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 
-		// TODO [RCH]: This would move our pawn instead of the selected unit. Move the selected unit instead.
-		// We move there and spawn some particles
-		//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitLocation);
+		if (SelectedUnit != nullptr)
+		{
+			auto* AiController = SelectedUnit->GetAiController();
+			if (AiController != nullptr)
+			{
+				AiController->MoveToLocation(HitLocation);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("[AOskradPlayerController::OnSetDestinationReleased] SelectedUnit->GetAiController() returned a nullptr."));
+			}
+		}
 	}
 }
 

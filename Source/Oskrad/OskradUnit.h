@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AIController.h"
 
 // Oskrad
 #include "OskradCharacter.h"
@@ -15,6 +16,10 @@ class AOskradUnitBase : public AOskradCharacter
 {
 	GENERATED_BODY()
 public:
+	// ---------------------------------------------------------
+	// Strictly Gameplay
+	// ---------------------------------------------------------
+
 	virtual void ReceiveDamage(float InDamage) {};
 
 	virtual void BasicAttack(AOskradUnitBase* InTarget) {};
@@ -26,4 +31,12 @@ public:
 
 	virtual float GetHealth() { return -1.f; };
 
+	// ---------------------------------------------------------
+	// Other
+	// ---------------------------------------------------------
+
+	virtual AAIController* GetAiController()
+	{ 
+		return Cast<AAIController>(GetController());
+	}
 };
