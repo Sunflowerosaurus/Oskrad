@@ -12,6 +12,7 @@
 // Oskrad
 #include "OskradCharacter.h"
 #include "Oskrad.h"
+#include "OskradUnit.h"
 
 AOskradPlayerController::AOskradPlayerController()
 {
@@ -60,8 +61,12 @@ void AOskradPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AOskradPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &AOskradPlayerController::OnSetDestinationReleased);
 
-	InputComponent->BindAction("PickUnitSingle", IE_Pressed, this, &AOskradPlayerController::OnPickUnitSinglePressed);
+	InputComponent->BindAction("InteractMain", IE_Pressed, this, &AOskradPlayerController::OnInteractMainPressed);
+
+	InputComponent->BindAction("BasicAttack", IE_Pressed, this, &AOskradPlayerController::OnBasicAttack);
+
 }
+
 
 void AOskradPlayerController::SelectUnit(AOskradUnitBase* const InToSelect)
 {
@@ -80,6 +85,15 @@ void AOskradPlayerController::OnSetDestinationPressed()
 
 	// Just in case the character was moving because of a previous short press we stop it
 	StopMovement();
+}
+
+
+void AOskradPlayerController::OnBasicAttack()	
+{
+	bTargetingMode = true;
+
+	
+
 }
 
 void AOskradPlayerController::OnSetDestinationReleased()
@@ -112,12 +126,30 @@ void AOskradPlayerController::OnSetDestinationReleased()
 	}
 }
 
-void AOskradPlayerController::OnPickUnitSinglePressed()
+void AOskradPlayerController::OnInteractMainPressed()
 {
-	FHitResult Hit;
-	GetHitResultUnderCursor(ECC_Pawn, true, Hit);
-	auto* TargetActor = Hit.GetActor();
+	// TODO: Co teraz?
+	if (bTargetingMode == true)
+	{
+		FHitResult Hit;
+		GetHitResultUnderCursor(ECC_Pawn, true, Hit);
+		auto* TargetActor = Hit.GetActor();
 
-	auto* TargetOskradUnit = Cast<AOskradUnitBase>(TargetActor);
-	SelectUnit(TargetOskradUnit); // Takes care of nullptrs
+		auto* TargetOskradUnit = Cast<AOskradUnitBase>(TargetActor);
+		if (TargetOskradUnit != nullptr && SelectedUnit != nullptr)
+		{
+			SelectedUnit->BasicAttack(TargetOskradUnit);
+		}
+		
+		bTargetingMode = false;
+	}
+	else
+	{
+		FHitResult Hit;
+		GetHitResultUnderCursor(ECC_Pawn, true, Hit);
+		auto* TargetActor = Hit.GetActor();
+
+		auto* TargetOskradUnit = Cast<AOskradUnitBase>(TargetActor);
+		SelectUnit(TargetOskradUnit); // Takes care of nullptrs
+	}
 }

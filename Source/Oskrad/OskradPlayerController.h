@@ -23,6 +23,9 @@ class AOskradPlayerController : public APlayerController
 
 public:
 	AOskradPlayerController();
+	
+	void OnBasicAttack();
+
 
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -60,11 +63,16 @@ protected:
 
 	void MovePawnCameraUp();
 
-	void OnPickUnitSinglePressed();
+
+
+	void OnInteractMainPressed();
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	AOskradUnitBase* SelectedUnit = nullptr;
+	
+	bool bTargetingMode = false; // false = select mode; true = targetMode
+
 
 private:
 	bool bMoveDestinationInputPressed; 

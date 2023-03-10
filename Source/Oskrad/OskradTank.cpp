@@ -13,12 +13,23 @@ AOskradTank::AOskradTank()
 void AOskradTank::ReceiveDamage(float InDamage)
 {
 	HealthPoints = HealthPoints - (InDamage - ArmorPoints);
+	if (HealthPoints <= 0)
+	{
+		this->Destroy();
+	}
 	UE_LOG(LogTemp, Error, TEXT("---HP: %f ---"), HealthPoints);
 }
 
 void AOskradTank::BasicAttack(AOskradUnitBase* InTarget)
 {
-	InTarget->ReceiveDamage(BaseDamage);
+		
+		InTarget->ReceiveDamage(BaseDamage);
+}
+
+void AOskradTank::SpecialAttack2(AOskradUnitBase* InTarget) 
+{
+	InTarget = this;
+	this->ArmorPoints += 20; // Implement turns it should last 2-3 turns
 }
 
 float AOskradTank::GetHealth()

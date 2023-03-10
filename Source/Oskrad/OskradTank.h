@@ -21,10 +21,7 @@ public:
 		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
 	}
 
-	void SpecialAttack2(AOskradUnitBase* InTarget) override
-	{
-		checkf(false, TEXT("TODO: NOT IMPLEMENTED YET."));
-	}
+	void SpecialAttack2(AOskradUnitBase* InTarget) override;
 
 	void SpecialAttack3(AOskradUnitBase* InTarget) override
 	{
