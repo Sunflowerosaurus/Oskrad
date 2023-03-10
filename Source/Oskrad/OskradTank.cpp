@@ -22,7 +22,6 @@ void AOskradTank::ReceiveDamage(float InDamage)
 
 void AOskradTank::BasicAttack(AOskradUnitBase* InTarget)
 {
-		
 		InTarget->ReceiveDamage(BaseDamage);
 }
 
@@ -30,6 +29,7 @@ void AOskradTank::SpecialAttack2(AOskradUnitBase* InTarget)
 {
 	InTarget = this;
 	this->ArmorPoints += 20; // Implement turns it should last 2-3 turns
+	UE_LOG(LogTemp, Error, TEXT("----ARMOR POINTS: %f----"), ArmorPoints);
 }
 
 float AOskradTank::GetHealth()

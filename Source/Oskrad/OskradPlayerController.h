@@ -25,6 +25,7 @@ public:
 	AOskradPlayerController();
 	
 	void OnBasicAttack();
+	void OnSpecialAttack2();
 
 
 	/** Time Threshold to know if it was a short press */
@@ -71,8 +72,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	AOskradUnitBase* SelectedUnit = nullptr;
 	
-	bool bTargetingMode = false; // false = select mode; true = targetMode
-
+	//bool bTargetingMode = false; // false = select mode; true = targetMode
+	enum Action { Default, Basic, Special1, Special2, Special3, Move };
+	Action ActionNum = Default;
 
 private:
 	bool bMoveDestinationInputPressed; 

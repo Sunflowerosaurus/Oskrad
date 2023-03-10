@@ -64,7 +64,7 @@ void AOskradPlayerController::SetupInputComponent()
 	InputComponent->BindAction("InteractMain", IE_Pressed, this, &AOskradPlayerController::OnInteractMainPressed);
 
 	InputComponent->BindAction("BasicAttack", IE_Pressed, this, &AOskradPlayerController::OnBasicAttack);
-
+	InputComponent->BindAction("SpecialAttack2", IE_Pressed, this, &AOskradPlayerController::OnSpecialAttack2);
 }
 
 
@@ -90,10 +90,12 @@ void AOskradPlayerController::OnSetDestinationPressed()
 
 void AOskradPlayerController::OnBasicAttack()	
 {
-	bTargetingMode = true;
+	ActionNum = Basic;
+}
 
-	
-
+void AOskradPlayerController::OnSpecialAttack2() 
+{
+	ActionNum = Special2;
 }
 
 void AOskradPlayerController::OnSetDestinationReleased()
@@ -129,7 +131,7 @@ void AOskradPlayerController::OnSetDestinationReleased()
 void AOskradPlayerController::OnInteractMainPressed()
 {
 	// TODO: Co teraz?
-	if (bTargetingMode == true)
+	if (ActionNum != Default)
 	{
 		FHitResult Hit;
 		GetHitResultUnderCursor(ECC_Pawn, true, Hit);
@@ -138,10 +140,18 @@ void AOskradPlayerController::OnInteractMainPressed()
 		auto* TargetOskradUnit = Cast<AOskradUnitBase>(TargetActor);
 		if (TargetOskradUnit != nullptr && SelectedUnit != nullptr)
 		{
-			SelectedUnit->BasicAttack(TargetOskradUnit);
+			if (ActionNum == Basic)
+			{
+				SelectedUnit->BasicAttack(TargetOskradUnit);
+			}
+
+			else if(ActionNum == Special2)
+			{
+				SelectedUnit->SpecialAttack2(SelectedUnit);
+			}
 		}
 		
-		bTargetingMode = false;
+		ActionNum = Default;
 	}
 	else
 	{
