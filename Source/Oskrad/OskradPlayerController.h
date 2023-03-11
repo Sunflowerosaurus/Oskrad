@@ -16,6 +16,8 @@
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 
+
+
 UCLASS()
 class AOskradPlayerController : public APlayerController
 {
@@ -72,9 +74,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		AOskradUnitBase* SelectedUnit = nullptr;
 
-	//bool bTargetingMode = false; // false = select mode; true = targetMode
-	enum Action { Default, Basic, Special1, Special2, Special3, Move };
-	Action ActionNum = Default;
+	enum class Action { Default, Basic, Special1, Special2, Special3, Move };
+	Action ActionNum = Action::Default;
 
 private:
 	bool bMoveDestinationInputPressed;

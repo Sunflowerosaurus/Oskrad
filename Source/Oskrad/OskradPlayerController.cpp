@@ -90,12 +90,12 @@ void AOskradPlayerController::OnSetDestinationPressed()
 
 void AOskradPlayerController::OnBasicAttack()
 {
-	ActionNum = Basic;
+	ActionNum = Action::Basic;
 }
 
 void AOskradPlayerController::OnSpecialAttack2()
 {
-	ActionNum = Special2;
+	ActionNum = Action::Special2;
 }
 
 void AOskradPlayerController::OnSetDestinationReleased()
@@ -131,7 +131,7 @@ void AOskradPlayerController::OnSetDestinationReleased()
 void AOskradPlayerController::OnInteractMainPressed()
 {
 	// TODO: Co teraz?
-	if (ActionNum != Default)
+	if (ActionNum != Action::Default)
 	{
 		FHitResult Hit;
 		GetHitResultUnderCursor(ECC_Pawn, true, Hit);
@@ -140,18 +140,18 @@ void AOskradPlayerController::OnInteractMainPressed()
 		auto* TargetOskradUnit = Cast<AOskradUnitBase>(TargetActor);
 		if (TargetOskradUnit != nullptr && SelectedUnit != nullptr)
 		{
-			if (ActionNum == Basic)
+			if (ActionNum == Action::Basic)
 			{
 				SelectedUnit->BasicAttack(TargetOskradUnit);
 			}
 
-			else if (ActionNum == Special2)
+			else if (ActionNum == Action::Special2)
 			{
 				
 			}
 		}
 
-		ActionNum = Default;
+		ActionNum = Action:: Default;
 	}
 	else
 	{
