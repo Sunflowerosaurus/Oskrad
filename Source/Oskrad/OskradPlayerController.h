@@ -16,6 +16,8 @@
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
 
+
+
 UCLASS()
 class AOskradPlayerController : public APlayerController
 {
@@ -23,6 +25,10 @@ class AOskradPlayerController : public APlayerController
 
 public:
 	AOskradPlayerController();
+
+	void OnBasicAttack();
+	void OnSpecialAttack2();
+
 
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -60,17 +66,22 @@ protected:
 
 	void MovePawnCameraUp();
 
-	void OnPickUnitSinglePressed();
+
+
+	void OnInteractMainPressed();
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	AOskradUnitBase* SelectedUnit = nullptr;
+		AOskradUnitBase* SelectedUnit = nullptr;
+
+	enum class Action { Default, Basic, Special1, Special2, Special3, Move };
+	Action ActionNum = Action::Default;
 
 private:
-	bool bMoveDestinationInputPressed; 
+	bool bMoveDestinationInputPressed;
 
 	// For how long it "move to destination" input has been pressed
-	float MoveDestinationFollowTime; 
+	float MoveDestinationFollowTime;
 };
 
 
